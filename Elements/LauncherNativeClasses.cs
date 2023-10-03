@@ -42,10 +42,10 @@
         };
         public L_Button(string text, string type, string data = "", string tip = "")
         {
-            Text = text;
-            Type = type;
-            Data = data;
-            Tip = tip;
+            Text = Elements.Text.Trans(text);
+            Type = Elements.Text.Trans(type);
+            Data = Elements.Text.Trans(data);
+            Tip = Elements.Text.Trans(tip);
         }
     }
 }

@@ -1,5 +1,11 @@
 ﻿using PageBuilder.Cards;
 using static PageBuilder.Debug;
+using System.Collections.Generic;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Threading;
+using System.Windows;
 #if Client
 using NewsHomepageHelper.View;
 using WpfApp1;
@@ -378,6 +384,38 @@ namespace PageBuilder
             return result;
         }
 #else
+        public void GenerateAllFiles(string? outputpath = null)
+        {
+            foreach (var page in pages)
+            {
+                GenerateFile(page, outputpath);
+            }
+        }
+        public void GenerateFile(IPage page,string? outputpath)
+        {
+            if (!(page is XamlPage))
+                return;
+            var xamlpage = page as XamlPage;
+            new Thread(() =>
+            {
+                string code = string.Empty;
+                code = GenerateXAMLCode(xamlpage, new GenerateArgs());
+                //Clipboard.SetText(code);
+                Log($"开始生成：{page.Name}", 5);
+                if(outputpath == null)
+                    foreach (string path in OutputPath)
+                        WriteFile(path,xamlpage,code);
+                else
+                    WriteFile(outputpath, xamlpage, code);
+            }).Start();
+        }
+        public void WriteFile(string path,XamlPage xamlpage,string code)
+        {
+            var p = Path.GetDirectoryName($"{path}{Path.DirectorySeparatorChar}{xamlpage.outputPath}");
+            if (!Directory.Exists(p))
+                Directory.CreateDirectory(p);
+            File.WriteAllText($"{path}{Path.DirectorySeparatorChar}{xamlpage.outputPath}", code);
+        }
         public void GenerateAll()
         {
             //SaveAll();

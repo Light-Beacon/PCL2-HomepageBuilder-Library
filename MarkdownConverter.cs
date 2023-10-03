@@ -145,14 +145,32 @@ namespace PageBuilder
                                 goto default;
                             break;
                         case '?':
-                            var cargs = buffer.Split(' ');
+                            var q = buffer.Split('"');
+                            List<string> lineargs = new List<string>();
+                            for(int i = 0; i < q.Length; i++)
+                            {
+                                if(i%2 == 1)
+                                    lineargs.Add(q[i]);
+                                else
+                                {
+                                    while (q[i].EndsWith(" "))
+                                        q[i] = q[i][..^1];
+                                    while (q[i].StartsWith(" "))
+                                        q[i] = q[i][1..];
+                                    if (q[i].Length == 0)
+                                        continue;
+                                    var sub = q[i].Split(' ');
+                                    foreach(var s in sub)
+                                        lineargs.Add(s);
+                                }
+                            }
                             if (buffer[1] == ' ')
-                                switch (cargs[1])
+                                switch (lineargs[1])
                                 {
                                     case "B":
                                     case "Button":
                                     case "按钮":
-                                        elements.Add(new L_Button(cargs[2], cargs[3],(cargs.Length >= 5) ? cargs[4]:"",(cargs.Length >= 6) ? cargs[5] : ""));
+                                        elements.Add(new L_Button(lineargs[2], lineargs[3],(lineargs.Count() >= 5) ? lineargs[4]:"",(lineargs.Count() >= 6) ? lineargs[5] : ""));
                                         break;
                                 }
                             break;  
