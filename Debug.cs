@@ -97,6 +97,33 @@ namespace PageBuilder
             if (OnLog != null)
                 OnLog(message);
         }
+#elif Runner
+        public static void LogError(System.Exception ex, string message = null, short logLevel = 8)
+        {
+            Console.Error.WriteLine(message ?? ex.ToString());
+        }
+        public static void Log(string log, short logLevel, int code = 0, string detil = null)
+        {
+            string logMessage = string.Empty;
+            if (logLevel >= Level || code != 0)
+            {
+                logMessage = $"{log}";
+                if (code != 0)
+                {
+                    logMessage = $"[CODE:{code:X}]{log}";
+                }
+                Console.WriteLine(logMessage);
+            }
+        }
+        public static void Log(Exception ex, string message = null, short logLevel = 8)
+        {
+
+            if (logLevel >= Level && enabled)
+            {
+                string logMessage = $"[CODE:{ex:X}] {message} {ex.Message}";
+                Console.WriteLine(logMessage);
+            }
+        }
 #else
         public static void LogError(System.Exception ex, string message = null, short logLevel = 8)
         {
