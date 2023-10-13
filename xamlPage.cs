@@ -299,8 +299,6 @@ namespace PageBuilder
             try
             {
                 string fileContent = File.ReadAllText(pagePath);
-                if(fileContent.StartsWith("{") && fileContent.EndsWith("}"))
-                {
                     var jobj = JObject.Parse(fileContent);
                     name = jobj["name"].ToString();
                     outputPath = jobj["outputPath"].ToString().Replace("~", ProjectPath);
@@ -313,26 +311,7 @@ namespace PageBuilder
                     if (jobj.ContainsKey("genmode"))
                         genMode = (PageGenMode)Enum.Parse(typeof(PageGenMode), jobj["genmode"].ToString());
                     LoadCards((JArray)jobj["cards"]);
-                }
-                else
-                {
-#if Client
-                    //旧版本读取
-                    var dlg = new NewsHomepageHelper.TextBoxWindow($"当前加载的页面 {pagePath} 为旧版本页面，为升级为新版本请输入页面名");
-                    if(dlg.ShowDialog() == true)
-                    {
-                        var dlg2 = new SaveDlg();
-                        dlg2.Filter = "Xaml 文件|*.xaml";
-                        dlg2.Title = "当前加载的页面 {pagePath} 为旧版本页面，为升级为新版本请选择保存位置";
-                        if(dlg2.ShowDialog() == true)
-                        {
-                            name = dlg.Answer;
-                            outputPath = dlg2.FileName;
-                            LoadCards(JArray.Parse(fileContent));
-                        }
-                    }
-#endif
-                }
+                
                 //GenerateManager.RegistGenerater(UUID, "card", cards.GenerateCode);
             }
             catch(Exception e)

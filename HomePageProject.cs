@@ -427,12 +427,16 @@ namespace PageBuilder
         public string CheckPage(string pageName)
         {
             foreach (var page in pages)
+            {
+                if (page.Name == null)
+                    continue;
                 if (page.Name.ToLower() == pageName.ToLower())
                     return page.Name;
                 else
                     foreach (var a in page.Alias)
                         if (a.ToString() == pageName)
                             return page.Name;
+            }
             return Common.page404;
         }
         public string GeneratePage(string name)
