@@ -39,13 +39,62 @@ namespace NewsHomepageHelper.PageBuilder.CardLibrary
 
     internal class CardLibrary
     {
-        string Namespace;
-        string Name;
+        string Namespace { get; set;};
+        string Name {  get; set;};
+        CollectMethod LibCollectMethod { get; set};
+        List<ContentCard> _CardList;
+        Queue<ImportAction> ImportActions;
+        public CardLibrary(){}
+        public CardLibrary(string filepath)
+        {
+            try
+            {
+                return CreatFromFile(filepath);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public static CardLibrary CreatFromFile(string filepath)
+        {
+            CardLibrary lib = new();
+            JObject jobj = JObject.Parse(File.ReadAllText(LibPath));
+            if(jobj.ContainsKey(Actions))
+            {
+                foreach(actionObj in (jobj as JArray))
+                {
+                    ImportActions.Join(new ImportAction(actionObj["Action"],actionObj["Target"],actionObj["Value"]??"");
+                    ImportActions.Last.Execute(jobj);
+                }
+            }
+            lib.Namespace = jobj["namespace"].ToString();
+            lib.Name = (jobj["name"] ?? jobj["namespace"]).ToString();
+            lib.LibCollectMethod = (CollectMethod)Enum.Prase(typeof(CollectMethod),
+                                        jobj["CollectMethod"].ToString());
+        }
+    }
+
+    internal class ImportAction
+    {
+        private static Dictionary<string,ICardImportAction> _cardImportActionMapping;
+        string Action { get; set;};
+        string Target { get; set;};
+        string Value { get; set;};
+        ImportAction(string action,string target,string value)
+        {
+            Action = action;
+            Target = target;
+            Value = value;
+        }
+        void Execute(JObject CardJobj)
+        {
+            _cardImportActionMapping[Action].Execute(CardJobj,Target,Value);
+        }
     }
 
     internal class CardCollector
     {
-        CollectMethod method;
         
     }
 
