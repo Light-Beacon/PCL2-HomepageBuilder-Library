@@ -3,4 +3,4 @@
 
 目前的[新闻主页](https://github.com/Light-Beacon/PCL2-NewsHomepage)是由基于该库的客户端和服务器生成的
 
-由于维护难度过高，可扩展性过低，正在着手准备新的可供大众使用的 PageBuilder
+由于维护难度过高，可扩展性过低，建议使用新的 [PageBuilder](https://github.com/Light-Beacon/HomepageBuilder)https://github.com/Light-Beacon/HomepageBuilder
